@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(descartes_capability)
+cmake_policy(SET CMP0048 NEW)
+project(descartes_capability VERSION 0.0.1)
 
 # C++ 14
 add_compile_options(-std=c++14)
@@ -14,12 +15,13 @@ add_definitions(-W -Wall -Wextra
 find_package(catkin REQUIRED COMPONENTS
   descartes_core
   descartes_moveit
-  descartes_trajectory
   descartes_planner
+  descartes_trajectory
+  eigen_conversions
   moveit_core
+  moveit_ros_move_group
   moveit_ros_planning
   moveit_visual_tools
-  moveit_ros_move_group
   roscpp
   roslint
   rospy
@@ -34,12 +36,13 @@ find_package(Eigen3 REQUIRED)
 ###################################
 catkin_package(
   CATKIN_DEPENDS
+    eigen_conversions
+    moveit_core
+    moveit_ros_move_group
+    moveit_ros_planning
+    moveit_visual_tools
     roscpp
     rospy
-    moveit_core
-    moveit_ros_planning
-    moveit_ros_move_group
-    moveit_visual_tools
   INCLUDE_DIRS
     include
   LIBRARIES
@@ -123,7 +126,7 @@ install(PROGRAMS
 )
 
 install(FILES
-  descartes_capability_plugin_description.xml
+  ${PROJECT_NAME}_plugin_description.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 #############
@@ -133,8 +136,6 @@ install(FILES
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   find_package(pluginlib REQUIRED)
-  find_package(moveit_resources REQUIRED)
-  include_directories(${moveit_resources_INCLUDE_DIRS})
 
   add_rostest_gtest(descartes_path_service_capability_test test/descartes_path_service_capability_test.test test/descartes_path_service_capability_test.cpp)
   target_link_libraries(descartes_path_service_capability_test
